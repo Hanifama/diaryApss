@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aplikasi Pengelolaan Data Buku</title>
+</head>
+<style>
+ * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body, input, button {
+    font-family: 'Open Sans', sans-serif;
+}
+
+input, button {
+    font-size: 16px;
+}
+
+.head_bar {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: cornflowerblue;
+    color: white;
+}
+
+main {
+    max-width: 800px;
+    width: 80%;
+    margin: 0 auto;
+    padding: 16px;
+
+}
+
+.input_section {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.input_section > h2 {
+    text-align: center;
+    color: cornflowerblue;
+}
+
+.input_section > form > .input {
+    margin: 8px 0;
+}
+
+.input_section > form > button {
+    background-color: cornflowerblue;
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    display: block;
+    width: 100%;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.input_section > form > button > span {
+    font-weight: bold;
+}
+
+.input_section > form > .input > input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+
+.input_section > form > .input > label {
+    color: cornflowerblue;
+    font-weight: bold;
+}
+
+.input_section > form > .input_inline {
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+}
+
+.input_section > form > .input_inline > label {
+    color: cornflowerblue;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.search_section {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.search_section > h2 {
+    color: cornflowerblue;
+}
+
+.search_section > form {
+    padding: 16px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr 0.5fr;
+    grid-gap: 10px;
+}
+
+.search_section > form > label {
+    display: flex;
+    align-items: center;
+}
+
+.search_section > form > input {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.search_section > form > button {
+    background-color: cornflowerblue;
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book_shelf {
+    margin: 16px 0 0 0;
+    border: 1px solid black;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.book_shelf > h2 {
+    color: cornflowerblue;
+}
+
+.book_shelf > .book_list {
+    padding: 16px;
+}
+
+.book_shelf > .book_list > .book_item {
+    padding: 8px 16px 16px 16px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.book_shelf > .book_list > .book_item > h3, p {
+    margin: 8px 0;
+}
+
+.book_shelf > .book_list > .book_item > .action > button {
+    border: 0;
+    padding: 5px;
+    margin: 0 5px 0 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book_shelf > .book_list > .book_item > .action > .green {
+    background-color: darkgreen;
+    color: white;
+}
+
+.book_shelf > .book_list > .book_item > .action > .red {
+    background-color: darkred;
+    color: white;
+}
+
+.book-item{
+  border: 1px solid blue;
+  margin: 10px;
+  padding: 10px;
+}
+
+</style>
+<body>
+  <header class="head_bar">
+    <h1 class="head_bar__title">Bookshelf Apps</h1>
+  </header>
+
+  <main>
+    <section class="input_section">
+      <form id="add-book-form">
+        <h2>Tambahkan Buku</h2>
+        <label for="title">Judul Buku:</label>
+        <input type="text" id="title" required><br><br>
+    
+        <label for="author">Penulis:</label>
+        <input type="text" id="author" required><br><br>
+    
+        <label for="year">Tahun Terbit:</label>
+        <input type="number" id="year" required><br><br>
+    
+        <label for="isComplete">Selesai Dibaca:</label>
+        <input type="checkbox" id="isComplete"><br><br>
+    
+        <button type="submit">Tambah Buku</button>
+      </form>
+    </section>
+    
+    <section class="search_section">
+      <form id="search-form">
+        <h2>Pencarian Buku</h2>
+        <input type="text" id="search-input" placeholder="Masukkan judul buku">
+        <button type="submit">Cari</button>
+      </form>
+    </section>
+    
+    <section class="book_shelf">
+      <h2>Rak Belum Selesai Dibaca</h2>
+      <div id="incomplete-bookshelf">
+        <p></p>
+      </div>
+    </section>
+    
+    <section class="book_shelf">
+      <h2>Rak Selesai Dibaca</h2>
+      <div id="complete-bookshelf">
+        <p></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Mendapatkan referensi elemen-elemen yang diperlukan
+    const addBookForm = document.getElementById('add-book-form');
+    const titleInput = document.getElementById('title');
+    const authorInput = document.getElementById('author');
+    const yearInput = document.getElementById('year');
+    const isCompleteInput = document.getElementById('isComplete');
+    const incompleteBookshelf = document.getElementById('incomplete-bookshelf');
+    const completeBookshelf = document.getElementById('complete-bookshelf');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+  
+    // Mengambil data buku dari localStorage atau menginisialisasi jika belum ada
+    let books = JSON.parse(localStorage.getItem('books')) || [];
+  
+    // Fungsi untuk menampilkan buku ke rak yang sesuai
+    function displayBooks() {
+  incompleteBookshelf.innerHTML = '';
+  completeBookshelf.innerHTML = '';
+
+  if (books.length === 0) {
+    incompleteBookshelf.innerHTML = '<p>Masih kosong.</p>';
+    completeBookshelf.innerHTML = '<p>Masih kosong.</p>';
+  } else {
+    let incompleteBooksExist = false;
+    let completeBooksExist = false;
+
+    for (let i = 0; i < books.length; i++) {
+      const book = books[i];
+
+      const bookItem = document.createElement('div');
+      bookItem.classList.add('book-item');
+      bookItem.innerHTML = `
+        <p>Judul: ${book.title}</p>
+        <p>Penulis: ${book.author}</p>
+        <p>Tahun Terbit: ${book.year}</p>
+        <div class="button-container">
+          <button class="move-button">${book.isComplete ? 'Belum Selesai Dibaca' : 'Selesai Dibaca'}</button>
+          <button class="edit-button">Edit</button>
+          <button class="delete-button">Hapus</button>
+        </div>
+      `;
+
+      bookItem.querySelector('.move-button').addEventListener('click', function() {
+        moveBook(i);
+      });
+
+      bookItem.querySelector('.edit-button').addEventListener('click', function() {
+        editBook(i);
+      });
+
+      bookItem.querySelector('.delete-button').addEventListener('click', function() {
+        deleteBook(i);
+      });
+
+
+      if (book.isComplete) {
+        completeBookshelf.appendChild(bookItem);
+        completeBooksExist = true;
+      } else {
+        incompleteBookshelf.appendChild(bookItem);
+        incompleteBooksExist = true;
+      }
+    }
+
+    if (!completeBooksExist) {
+      completeBookshelf.innerHTML = '<p>Rak selesai dibaca kosong.</p>';
+    }
+
+    if (!incompleteBooksExist) {
+      incompleteBookshelf.innerHTML = '<p>Rak belum selesai dibaca kosong.</p>';
+    }
+  }
+}
+
+    // Fungsi untuk menambahkan buku baru
+    function addBook(event) {
+      event.preventDefault();
+  
+      const title = titleInput.value;
+      const author = authorInput.value;
+      const year = yearInput.value;
+      const isComplete = isCompleteInput.checked;
+      
+      if (title === '' || author === '' || year === '') {
+        alert('Maaf, mohon ulangi. Inputan Anda kosong.');
+      }
+    
+      const newBook = {
+        id: +new Date(),
+        title,
+        author,
+        year,
+        isComplete,
+      };
+  
+      books.push(newBook);
+      localStorage.setItem('books', JSON.stringify(books));
+  
+      displayBooks();
+      addBookForm.reset();
+    }
+  
+    // Fungsi untuk memindahkan buku antar rak
+    function moveBook(index) {
+      const book = books[index];
+      book.isComplete = !book.isComplete;
+  
+      localStorage.setItem('books', JSON.stringify(books));
+      displayBooks();
+    }
+  
+    // Fungsi untuk mengedit data buku
+    function editBook(index) {
+      const book = books[index];
+  
+      const updatedTitle = prompt('Masukkan judul buku:', book.title);
+      const updatedAuthor = prompt('Masukkan penulis buku:', book.author);
+      const updatedYear = prompt('Masukkan tahun terbit buku:', book.year);
+
+      if (updatedTitle === '' || updatedAuthor === '' || updatedYear === '') {
+        alert('Maaf, mohon ulangi. Inputan Anda kosong.');
+        return;
+      }
+  
+      book.title = updatedTitle;
+      book.author = updatedAuthor;
+      book.year = updatedYear;
+  
+      localStorage.setItem('books', JSON.stringify(books));
+      displayBooks();
+    }
+  
+    // Fungsi untuk menghapus buku
+    function deleteBook(index) {
+      books.splice(index, 1);
+  
+      localStorage.setItem('books', JSON.stringify(books));
+      displayBooks();
+    }
+  
+    // Fungsi untuk mencari buku berdasarkan judul
+    function searchBooks(event) {
+      event.preventDefault();
+  
+      const keyword = searchInput.value.toLowerCase();
+      if (keyword === '') {
+        displayBooks();
+        alert('Maaf, mohon ulangi. Pencarian Anda kosong.');
+        return;
+      }
+      const filteredBooks = books.filter((book) => {
+        const title = book.title.toLowerCase();
+        return title.includes(keyword);
+      });
+  
+      displayFilteredBooks(filteredBooks);
+    }
+  
+    // Fungsi untuk menampilkan hasil pencarian buku
+    function displayFilteredBooks(filteredBooks) {
+      incompleteBookshelf.innerHTML = '';
+      completeBookshelf.innerHTML = '';
+  
+      if (filteredBooks.length === 0) {
+        incompleteBookshelf.innerHTML = '<p>Tidak ada buku yang dicari disini.</p>';
+        completeBookshelf.innerHTML = '<p>Tidak ada buku yang dicari disini.</p>';
+      }
+  
+      for (let i = 0; i < filteredBooks.length; i++) {
+        const book = filteredBooks[i];
+  
+        const bookItem = document.createElement('div');
+        bookItem.classList.add('book-item');
+        
+        const moveButton = document.createElement('button');
+        moveButton.classList.add('move-button');
+        moveButton.textContent = book.isComplete ? 'Belum Selesai Dibaca' : 'Selesai Dibaca';
+        moveButton.addEventListener('click', function() {
+          moveBook(i);
+        });
+        
+        const editButton = document.createElement('button');
+        editButton.classList.add('edit-button');
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', function() {
+          editBook(i);
+        });
+  
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'Hapus';
+        deleteButton.addEventListener('click', function() {
+          deleteBook(i);
+        });
+  
+        bookItem.innerHTML = `
+          <p>Judul: ${book.title}</p>
+          <p>Penulis: ${book.author}</p>
+          <p>Tahun Terbit: ${book.year}</p>
+        `;
+        
+        bookItem.appendChild(moveButton);
+        bookItem.appendChild(editButton);
+        bookItem.appendChild(deleteButton);
+  
+        if (book.isComplete) {
+          completeBookshelf.appendChild(bookItem);
+        } else {
+          incompleteBookshelf.appendChild(bookItem);
+        }
+      }
+    }
+  
+    // Memanggil fungsi displayBooks saat pertama kali memuat halaman
+    displayBooks();
+  
+    // Menambahkan event listener untuk form penambahan buku
+    addBookForm.addEventListener('submit', addBook);
+  
+    // Menambahkan event listener untuk form pencarian buku
+    searchForm.addEventListener('submit', searchBooks);
+  </script>
+  
+</body>
+</html>
